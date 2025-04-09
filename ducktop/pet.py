@@ -1,6 +1,6 @@
 import random
-from rendering import AnimationHandler, load_duck_animations
-from state_handler import State
+from ducktop.rendering import AnimationHandler, load_duck_animations
+from ducktop.state_handler import State
 
 P_REMAIN = 0.995
 P_TURN = 0.5

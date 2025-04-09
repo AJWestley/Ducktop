@@ -1,2 +1,7 @@
-/.mypy_cache
-/__pycache__
+**/.mypy_cache
+**/__pycache__
+/build
+/dist
+app.spec
+DuckTop.spec
+/debug.ps1

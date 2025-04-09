@@ -1,5 +1,3 @@
-import random
-
 class State:
     def __init__(self, init_state, facing):
         self.set_state(init_state)

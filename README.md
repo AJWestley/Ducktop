@@ -1,8 +1,9 @@
 # DuckTop
 
 A small pixel-art duck that lives on your desktop.
+The app is contained within a the `DuckTop.exe` file in the 
 
-## Features
+## Version 1.0.0 Features
 
 - The duck can be picked up and dropped:
     - When grabbed, the duck panics.
@@ -21,7 +22,6 @@ A small pixel-art duck that lives on your desktop.
 - Throwing the duck.
 - Petting the duck.
 - Chasing the cursor.
-- Runnable .exe
 
 ### Improvements
 - Smoother floating movement.

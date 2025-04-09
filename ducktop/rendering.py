@@ -1,4 +1,5 @@
 from PIL import Image, ImageTk
+from ducktop.utils import resource_path
 
 class AnimationHandler:
     def __init__(self, animation_map, starting_animation, starting_direction, frame_width, frame_height):
@@ -66,12 +67,13 @@ animation_types = {
     'walking'
 }
 
-def load_duck_animations(folder = 'animations', frame_width = 32):
+def load_duck_animations(folder = 'ducktop/animations', frame_width = 32):
     animations = {}
     for direction in directions:
         animations[direction] = {}
         for ani_type in animation_types:
-            sprite_sheet = Image.open(f"{folder}/{ani_type}_{direction}.png")
+            path = resource_path(f"{folder}/{ani_type}_{direction}.png")
+            sprite_sheet = Image.open(path)
             num_frames = sprite_sheet.width // frame_width
             animations[direction][ani_type] = {'sprite_sheet': sprite_sheet, 'num_frames': num_frames}
     return animations
