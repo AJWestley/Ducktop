@@ -21,6 +21,7 @@ A small pixel-art duck that lives on your desktop.
 - Throwing the duck.
 - Petting the duck.
 - Chasing the cursor.
+- Runnable .exe
 
 ### Improvements
 - Smoother floating movement.
