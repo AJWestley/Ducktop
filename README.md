@@ -1,7 +1,6 @@
 # DuckTop
 
 A small pixel-art duck that lives on your desktop.
-The app is contained within a the `DuckTop.exe` file in the 
 
 ## How to Install
 
