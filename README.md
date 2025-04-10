@@ -13,11 +13,11 @@ The app is contained within a the `DuckTop.exe` file in the
     - Pecking at the ground
     - Turning around 
     - Walking
+    - Sitting down (and standing up)
 
 ## Future Additions
 
 ### Features
-- Sitting and standing up (with associated idle animations).
 - Falling asleep and waking up.
 - Throwing the duck.
 - Petting the duck.
@@ -26,4 +26,3 @@ The app is contained within a the `DuckTop.exe` file in the
 ### Improvements
 - Smoother floating movement.
 - Floating animation.
-- Improved pecking animation.

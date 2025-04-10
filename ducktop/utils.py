@@ -2,10 +2,7 @@ import os
 import sys
 import ctypes
 from ctypes import wintypes
-
-# ----- Constants -----
-
-TRANSPARENT = '#FF00FF'
+from ducktop.constants import Colours
 
 
 # ----- Startup -----
@@ -13,7 +10,7 @@ TRANSPARENT = '#FF00FF'
 def initialise_application(root, stay_on_top: bool = False):
     # Window settings
     root.overrideredirect(True)
-    root.wm_attributes("-transparentcolor", TRANSPARENT) # choose a bg colour for transparency
+    root.wm_attributes("-transparentcolor", Colours.TRANSPARENT) # choose a bg colour for transparency
     if stay_on_top:
         root.wm_attributes("-topmost", True)
 

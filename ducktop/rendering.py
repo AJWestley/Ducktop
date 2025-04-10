@@ -50,12 +50,12 @@ class AnimationHandler:
 
 directions = ['left', 'right']
 animation_types = {
-    'blinking',
+    'idle',
     'flying',
     'jump',
     'panic',
     'pecking_floor',
-    'sitting_blinking',
+    'sitting_idle',
     'sitting_down',
     'sitting_looking_around',
     'sleep_from_sitting',

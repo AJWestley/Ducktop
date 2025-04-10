@@ -2,7 +2,8 @@ from functools import partial
 import tkinter as tk
 from ducktop.pet import Duck
 from ducktop.user_actions import start_drag, do_drag, stop_drag
-from ducktop.utils import initialise_application, get_starting_position, clip_position, get_screen_height, TRANSPARENT
+from ducktop.utils import initialise_application, get_starting_position, clip_position, get_screen_height
+from ducktop.constants import Colours
 
 def main():
     
@@ -15,7 +16,7 @@ def main():
 
     # ----- Create Duck -----
     x, y = get_starting_position(root)
-    duck = Duck('blinking', x, y, screen_width, screen_height)
+    duck = Duck('idle', x, y, screen_width, screen_height)
     
     # ----- Recurring Functions -----
     def render_scene():
@@ -38,7 +39,7 @@ def main():
     
     
     # ----- Create Label -----
-    label = tk.Label(root, bg=TRANSPARENT)
+    label = tk.Label(root, bg=Colours.TRANSPARENT)
     label.pack()
     
     label.bind("<Button-1>", partial(start_drag, root=root, duck=duck))

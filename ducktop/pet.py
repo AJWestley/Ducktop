@@ -1,10 +1,7 @@
 import random
 from ducktop.rendering import AnimationHandler, load_duck_animations
 from ducktop.state_handler import State
-
-P_REMAIN = 0.995
-P_TURN = 0.5
-P_WALK = 0.4
+from ducktop.constants import Probability
 
 class Duck:
     def __init__(self, start_state, x, y, sw, sh):
@@ -16,7 +13,7 @@ class Duck:
         
         animations = load_duck_animations()
         
-        self.animator = AnimationHandler(animations, 'blinking', self.state.facing, 32, 32)
+        self.animator = AnimationHandler(animations, 'idle', self.state.facing, 32, 32)
         
         self.sw = sw
         self.sh = sh
@@ -30,17 +27,30 @@ class Duck:
             self.x += velocity
             
             if self.x - 5 < self.state.destination < self.x + 5:
-                self.state.set_state('blinking')
+                self.state.set_state('idle')
         
-        if self.state.pet_state == 'blinking' and not self.state.falling:
-            if random.uniform(0, 1) > P_REMAIN:
+        if self.state.pet_state == 'idle' and not self.state.falling:
+            if random.uniform(0, 1) > Probability.NO_ACTION_STANDING:
                 self.change_state()
         
-        if self.state.pet_state == 'turn' and self.animator.frame >= self.animator.num_frames - 1:
-            self.state.set_state('blinking')
+        if self.state.pet_state == 'sitting_idle' and not self.state.falling:
+            if random.uniform(0, 1) > Probability.NO_ACTION_SITTING:
+                self.change_state()
         
-        if self.state.pet_state == 'pecking_floor' and self.animator.frame >= self.animator.num_frames - 1:
-            self.state.set_state('blinking')
+        if self.state.pet_state == 'turn' and self.end_of_animation():
+            self.state.set_state('idle')
+        
+        if self.state.pet_state == 'pecking_floor' and self.end_of_animation():
+            self.state.set_state('idle')
+        
+        if self.state.pet_state == 'sitting_down' and self.end_of_animation():
+            self.state.set_state('sitting_idle')
+        
+        if self.state.pet_state == 'stand_up' and self.end_of_animation():
+            self.state.set_state('idle')
+        
+        if self.state.pet_state == 'sitting_looking_around' and self.end_of_animation():
+            self.state.set_state('sitting_idle')
             
         self.update_spritesheet()
     
@@ -48,20 +58,37 @@ class Duck:
         self.animator.set_spritesheet(self.state.pet_state)
     
     def change_state(self):
-        cumulative = P_TURN
         rand = random.uniform(0, 1)
         
-        if rand < cumulative:
-            self.turn_around()
-            return
+        if self.state.pet_state == 'idle':
+            if rand < Probability.TURN:
+                self.turn_around()
+                return
+            
+            rand -= Probability.TURN
+            
+            if rand < Probability.WALK:
+                self.start_walking()
+                return
+            
+            rand -= Probability.WALK
+            
+            if rand < Probability.SIT:
+                self.sit_down()
+                return
+            
+            self.peck_ground()
         
-        cumulative += P_WALK
-        
-        if rand < cumulative:
-            self.start_walking()
-            return
-        
-        self.peck_ground()
+        elif self.state.pet_state == 'sitting_idle':
+            if rand < Probability.LOOK_AROUND:
+                self.look_around_sitting()
+                return
+            
+            rand -= Probability.LOOK_AROUND
+            
+            if rand < Probability.STAND_UP:
+                self.stand_up()
+                return
     
     def turn_around(self):
         if self.state.facing == 'left':
@@ -70,25 +97,41 @@ class Duck:
             self.state.facing = 'left'
         self.state.pet_state = 'turn'
         self.animator.set_direction(self.state.facing)
+        self.animator.frame = 0
     
     def start_walking(self):
         if (self.state.facing == 'right' and self.x > 3 * self.sw / 4) or (self.state.facing == 'left' and self.x < self.sw / 4):
             self.turn_around()
-            return
         
-        if self.state.facing == 'right':
+        elif self.state.facing == 'right':
             self.state.destination = random.randint(self.x + 50, self.sw - 32)
         
-        if self.state.facing == 'left':
+        elif self.state.facing == 'left':
             self.state.destination = random.randint(-32, self.x - 50)
         
         self.state.set_state('walking')
     
+    def sit_down(self):
+        self.state.set_state('sitting_down')
+        self.animator.frame = 0
+    
+    def stand_up(self):
+        self.state.set_state('stand_up')
+        self.animator.frame = 0
+    
     def peck_ground(self):
         self.state.pet_state = 'pecking_floor'
+        self.animator.frame = 0
     
     def fall(self, screen_height):
         if self.y < screen_height- 65 and not self.state.grabbed:
             self.state.set_falling(True)
         else:
             self.state.set_falling(False)
+    
+    def look_around_sitting(self):
+        self.state.set_state('sitting_looking_around')
+        self.animator.frame = 0
+    
+    def end_of_animation(self):
+        return self.animator.frame >= self.animator.num_frames - 1
