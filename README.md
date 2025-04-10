@@ -1,7 +1,13 @@
 # DuckTop
 
 A small pixel-art duck that lives on your desktop.
-The app is contained within a the `DuckTop.exe` file in the 
+
+## How to Install
+
+1) Navigate to the right pane and find the 'Releases' panel.
+2) Click on the latest release (e.g. Version 1.0.0)
+3) In the following window, under the 'Assets' tab, click on `Ducktop.exe`.
+4) Once the file has been saved, it can be run just like any app.
 
 ## Version 1.0.0 Features
 
