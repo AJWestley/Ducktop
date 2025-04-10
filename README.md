@@ -9,7 +9,7 @@ A small pixel-art duck that lives on your desktop.
 3) In the following window, under the 'Assets' tab, click on `Ducktop.exe`.
 4) Once the file has been saved, it can be run just like any app.
 
-## Version 1.0.0 Features
+## Version 1.0.1 Features
 
 - The duck can be picked up and dropped:
     - When grabbed, the duck panics.
@@ -28,6 +28,7 @@ A small pixel-art duck that lives on your desktop.
 - Throwing the duck.
 - Petting the duck.
 - Chasing the cursor.
+- Ability to close the app by right-clicking the duck.
 
 ### Improvements
 - Smoother floating movement.
