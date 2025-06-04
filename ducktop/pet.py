@@ -1,4 +1,5 @@
 import random
+import time
 from ducktop.rendering import AnimationHandler, load_duck_animations
 from ducktop.state_handler import State
 from ducktop.constants import Probability
@@ -8,6 +9,9 @@ class Duck:
     
         self.x = x
         self.y = y
+
+        self.sleep_time = 0
+        self.sleep_start = 0
         
         self.state = State(start_state, 'left')
         
@@ -21,12 +25,21 @@ class Duck:
     def update_state(self):
         if self.state.falling:
             self.y += 2
+
+            if self.state.pet_state != 'panic':
+                self.state.set_state('panic')
+                self.animator.frame = 0
+        
+            if self.y > self.sh - 65:
+                self.state.set_falling(False)
+                self.state.set_state('idle')
+                self.y = self.sh - 65
         
         if self.state.pet_state == 'walking':
             velocity = 1 if self.state.facing == 'right' else -1
             self.x += velocity
             
-            if self.x - 5 < self.state.destination < self.x + 5:
+            if self.x - 10 < self.state.destination < self.x + 10:
                 self.state.set_state('idle')
         
         if self.state.pet_state == 'idle' and not self.state.falling:
@@ -45,6 +58,19 @@ class Duck:
         
         if self.state.pet_state == 'sitting_down' and self.end_of_animation():
             self.state.set_state('sitting_idle')
+        
+        if self.state.pet_state in ['sleep_from_standing', 'sleep_from_sitting'] and self.end_of_animation():
+            self.state.set_state('sleeping')
+            self.sleep_start = time.time()
+            self.sleep_time = random.randint(30, 180)
+        
+        if self.state.pet_state == 'sleeping':
+            if time.time() - self.sleep_start > self.sleep_time:
+                self.state.set_state('waking_up')
+                self.animator.frame = 0
+        
+        if self.state.pet_state == 'waking_up' and self.end_of_animation():
+            self.state.set_state('idle')
         
         if self.state.pet_state == 'stand_up' and self.end_of_animation():
             self.state.set_state('idle')
@@ -77,6 +103,12 @@ class Duck:
                 self.sit_down()
                 return
             
+            rand -= Probability.SIT
+
+            if rand < Probability.SLEEP_STANDING:
+                self.sleep_from_standing()
+                return
+            
             self.peck_ground()
         
         elif self.state.pet_state == 'sitting_idle':
@@ -89,6 +121,13 @@ class Duck:
             if rand < Probability.STAND_UP:
                 self.stand_up()
                 return
+            
+            rand -= Probability.STAND_UP
+
+            if rand < Probability.SLEEP_SITTING:
+                self.sleep_from_sitting()
+                return
+            
     
     def turn_around(self):
         if self.state.facing == 'left':
@@ -104,15 +143,27 @@ class Duck:
             self.turn_around()
         
         elif self.state.facing == 'right':
-            self.state.destination = random.randint(self.x + 50, self.sw - 32)
+            self.state.destination = random.randint(self.x + 50, self.sw - 64)
         
         elif self.state.facing == 'left':
-            self.state.destination = random.randint(-32, self.x - 50)
+            self.state.destination = random.randint(0, self.x - 50)
         
         self.state.set_state('walking')
     
     def sit_down(self):
         self.state.set_state('sitting_down')
+        self.animator.frame = 0
+    
+    def sleep_from_standing(self):
+        if time.time() - (self.sleep_start + self.sleep_time) < 600: # Prevent sleeping too soon after waking up
+            return
+        self.state.set_state('sleep_from_standing')
+        self.animator.frame = 0
+    
+    def sleep_from_sitting(self):
+        if time.time() - (self.sleep_start + self.sleep_time) < 600: # Prevent sleeping too soon after waking up
+            return
+        self.state.set_state('sleep_from_sitting')
         self.animator.frame = 0
     
     def stand_up(self):

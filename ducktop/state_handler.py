@@ -21,8 +21,6 @@ class State:
         self.grabbed = grabbed
         if grabbed:
             self.set_state('panic')
-        else:
-            self.set_state('idle')
     
     def set_falling(self, falling):
         self.falling = falling
