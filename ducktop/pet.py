@@ -27,7 +27,7 @@ class Duck:
         self.sh = sh
     
     def update_state(self):
-        if self.state.pet_state == 'panic' and not self.state.falling:
+        if self.state.pet_state == 'panic' and not (self.state.falling or self.state.grabbed):
             self.state.set_state('idle')
 
         if self.state.falling:
