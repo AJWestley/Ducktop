@@ -1,9 +1,5 @@
-
-
 class Colours:
     TRANSPARENT = '#FF00FF'
-
-
 
 class Probability:
     

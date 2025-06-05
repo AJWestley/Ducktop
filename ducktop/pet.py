@@ -12,6 +12,7 @@ class Duck:
 
         self.sleep_time = 0
         self.sleep_start = 0
+        self.start_pos = 0
         
         self.state = State(start_state, 'left')
         
@@ -77,7 +78,13 @@ class Duck:
         
         if self.state.pet_state == 'sitting_looking_around' and self.end_of_animation():
             self.state.set_state('sitting_idle')
-            
+
+        if self.state.pet_state == 'walking' and self.state.facing == 'left' and self.state.destination > self.x:
+            self.state.set_state('idle')
+        
+        if self.state.pet_state == 'walking' and self.state.facing == 'right' and self.state.destination < self.x:
+            self.state.set_state('idle')
+
         self.update_spritesheet()
     
     def update_spritesheet(self):
@@ -143,11 +150,12 @@ class Duck:
             self.turn_around()
         
         elif self.state.facing == 'right':
-            self.state.destination = random.randint(self.x + 50, self.sw - 64)
+            self.state.destination = random.randint(self.x + 50, self.sw - 32)
         
         elif self.state.facing == 'left':
-            self.state.destination = random.randint(0, self.x - 50)
-        
+            self.state.destination = random.randint(-32, self.x - 50)
+
+        self.start_pos = self.x
         self.state.set_state('walking')
     
     def sit_down(self):
