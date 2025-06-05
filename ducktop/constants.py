@@ -1,3 +1,6 @@
+class Restrictions:
+    MAX_NAME_LENGTH = 20
+
 class Colours:
     TRANSPARENT = '#FF00FF'
 

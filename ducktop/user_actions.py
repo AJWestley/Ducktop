@@ -1,3 +1,4 @@
+import tkinter as tk
 from ducktop.utils import clip_position, get_screen_height
 
 def start_drag(event, *, root=None, duck=None):

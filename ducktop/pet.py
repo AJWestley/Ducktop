@@ -6,12 +6,15 @@ from ducktop.constants import Probability
 
 class Duck:
     def __init__(self, start_state, x, y, sw, sh):
+
+        self.name = ''
     
         self.x = x
         self.y = y
 
         self.sleep_time = 0
         self.sleep_start = 0
+
         self.start_pos = 0
         
         self.state = State(start_state, 'left')
@@ -24,6 +27,9 @@ class Duck:
         self.sh = sh
     
     def update_state(self):
+        if self.state.pet_state == 'panic' and not self.state.falling:
+            self.state.set_state('idle')
+
         if self.state.falling:
             self.y += 2
 
@@ -160,6 +166,20 @@ class Duck:
     
     def sit_down(self):
         self.state.set_state('sitting_down')
+        self.animator.frame = 0
+    
+    def sleep(self):
+        if self.state.pet_state in ['sleeping', 'sleep_from_standing', 'sleep_from_sitting', 'panic']:
+            return
+        if self.state.pet_state in ['sitting_idle', 'sitting_looking_around']:
+            self.sleep_from_sitting()
+        else:
+            self.sleep_from_standing()
+    
+    def wake_up(self):
+        if self.state.pet_state != 'sleeping':
+            return
+        self.state.set_state('waking_up')
         self.animator.frame = 0
     
     def sleep_from_standing(self):

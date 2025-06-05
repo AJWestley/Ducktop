@@ -1,5 +1,8 @@
 from PIL import Image, ImageTk
-from ducktop.utils import resource_path
+import tkinter as tk
+import tkinter.font as tfont
+from ducktop.utils import resource_path, draw_speech_bubble
+from ducktop.constants import Colours
 
 class AnimationHandler:
     def __init__(self, animation_map, starting_animation, starting_direction, frame_width, frame_height):
@@ -47,6 +50,72 @@ class AnimationHandler:
         self.sprite_sheet = self.animation_map[self.facing][self.curr_animation]['sprite_sheet']
         self.frame = 0
 
+class NameBox:
+    def __init__(self, root, duck):
+        self.font = tfont.Font(family='Arial', size=10, weight='bold')
+        self.hover_name_window = tk.Toplevel(root)
+        self.hover_name_window.overrideredirect(True)
+        self.hover_name_window.wm_attributes("-topmost", True)
+        self.hover_name_window.wm_attributes("-transparentcolor", Colours.TRANSPARENT)
+        self.hover_name_window.configure(bg=Colours.TRANSPARENT)
+
+        self.canvas = tk.Canvas(
+            self.hover_name_window,
+            width=160,
+            height=40,
+            bg=Colours.TRANSPARENT,
+            highlightthickness=0,
+            bd=0
+        )
+        self.canvas.pack()
+    
+    def update_hover_position(self, duck, root):
+        if self.hover_name_window.winfo_ismapped():
+            x = duck.x
+            y = duck.y - 20
+            self.hover_name_window.geometry(f"+{x}+{y}")
+        root.after(10, lambda: self.update_hover_position(duck, root))
+    
+    def show_hover_name(self, duck, event):
+        if duck.name.strip() == "":
+            return
+
+        name_width = self.font.measure(duck.name)
+        padding = 20
+        bubble_width = name_width + padding
+        bubble_height = 36
+        tail_height = 8
+
+        bubble_width = max(60, min(bubble_width, 300))
+        total_height = bubble_height + tail_height
+
+        self.canvas.config(width=bubble_width, height=total_height)
+        self.canvas.delete("all")
+
+        draw_speech_bubble(
+            self.canvas,
+            width=bubble_width,
+            height=bubble_height,
+            r=12,
+            fill="#F5F5F5",
+            outline="#505050"
+        )
+
+        self.canvas.create_text(
+            bubble_width // 2, bubble_height // 2,
+            text=duck.name,
+            fill="black",
+            font=self.font
+        )
+
+        x = duck.x
+        y = duck.y - 20
+
+        self.hover_name_window.geometry(f"+{x}+{y}")
+        self.hover_name_window.deiconify()
+    
+    def hide_hover_name(self, event):
+        self.hover_name_window.withdraw()
 
 directions = ['left', 'right']
 animation_types = {
