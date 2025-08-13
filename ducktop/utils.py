@@ -131,10 +131,10 @@ def name_duck(root, duck):
 
 def open_settings_drop_down(root, duck):
     settings_menu = tk.Menu(root, tearoff=0, background='white')
-    if duck.name != '':
+    if duck.name == '':
         set_name = "Set Name"
-        settings_menu.add_command(label=duck.name, compound='left', font=('Arial', 11, 'bold'), activebackground='white', activeforeground='black', foreground='black')
     else:
+        settings_menu.add_command(label=duck.name, compound='left', font=('Arial', 11, 'bold'), activebackground='white', activeforeground='black', foreground='black')
         set_name = "Rename"
     settings_menu.add_command(label=set_name, font=('Arial', 10), command=lambda: name_duck(root, duck))
     if duck.state.pet_state == 'sleeping':
